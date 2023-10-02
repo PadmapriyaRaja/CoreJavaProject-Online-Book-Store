@@ -58,6 +58,7 @@ public class BookStoreMain {
 								System.out.println("Enter your choice:");
 								c = sc.next().toUpperCase().charAt(0);
 							} else if (c == 'N') {
+								isLogged = false;
 								break;
 							} else {
 								System.out.println("Invalid choice");
@@ -96,6 +97,7 @@ public class BookStoreMain {
 								System.out.println("Enter your choice:");
 								c = sc.next().toUpperCase().charAt(0);
 							} else if (c == 'N') {
+								isLogged = false;
 								break;
 							} else {
 								System.out.println("Invalid choice");

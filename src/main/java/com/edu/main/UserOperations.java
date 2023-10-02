@@ -12,7 +12,7 @@ public class UserOperations {
 	private static Connection con;
 	private static ResultSet rs;
 	private static PreparedStatement pst;
-	private static int bookid, choiceview, reqquantity, availquantity;
+	private static int bookid, choiceview, choiceUpdate,quantity,reqquantity, availquantity;
 	private static Scanner sc;
 	private static char c;
 	private static float bookprice,total_price,grand_total=0;
@@ -119,15 +119,76 @@ public class UserOperations {
 		} else {
 			System.out.println("Book not Found");
 		}
-//		System.out.println("Do you want to add items to cart?");
-//		System.out.println("YES - Y");
-//		System.out.println("Enter your choice:");
-//		c = sc.next().toUpperCase().charAt(0);
-//		if(c == 'Y') {
-//			UserOperations.viewBooks();
-//			UserOperations.addToCart();
-//		}
 
+}
+	
+	public static void updateCart() throws SQLException {
+		con = BookStoreConnection.getConnection();
+		sc = new Scanner(System.in);
+		s = "select * from add_to_cart";
+		pst = con.prepareStatement(s);
+		rs = pst.executeQuery();
+		System.out.println(
+				"-----------------------------------------------------------------------------------------------------------------------------------");
+		System.out.format("%5s %20s %22s %19s %18s  %18s %18s", "BookId", "BookName", "Author", "Price", "Category",
+				"Quantity","Total_Price");
+		System.out.println();
+		System.out.println(
+				"------------------------------------------------------------------------------------------------------------------------------------");
+		
+		while (rs.next()) {
+			System.out.format("%5d %25s %25s %12f %18s %18s %18f", rs.getInt("bookid"), rs.getString("bookname"),
+					rs.getString("authorname"), rs.getFloat("bookprice"), rs.getString("category"),
+					rs.getInt("quantity"),rs.getFloat("total_price"));
+			System.out.println();
+		}
+		System.out.println(
+				"-----------------------------------------------------------------------------------------------------------------------------------");
+		
+		System.out.println("Enter the book id from cart to be updated or removed:");
+		bookid = sc.nextInt();
+		s = "select * from add_to_cart where bookid = ?";
+		pst = con.prepareStatement(s);
+		pst.setInt(1, bookid);
+		rs = pst.executeQuery();
+		if(rs.next()) {
+			System.out.println("1)UPDATE QUANTITY\n2)DELETE ITEM");
+			System.out.println("Enter your choice:");
+			choiceUpdate = sc.nextInt();
+			if(choiceUpdate == 1) {
+				System.out.println("Enter the quantity to be changed:");
+				reqquantity = sc.nextInt();
+				if(reqquantity <= availquantity) {
+					total_price = reqquantity * availquantity;
+			    sql = "update add_to_cart set quantity = ?,total_price =? where bookid = ?";
+			    pst = con.prepareStatement(sql);
+			    pst.setInt(1, reqquantity);
+			    pst.setFloat(2, total_price);
+			    pst.setInt(3, bookid);
+			     int i = pst.executeUpdate();
+			     if(i>0) {
+			    	 System.out.println("Updated the cart succesfully");
+			     }else {
+			    	 System.out.println("Some error occured");
+			     }
+				}
+			}else if(choiceUpdate == 2) {
+				s = "delete from add_to_cart where bookid = ?";
+				pst = con.prepareStatement(s);
+				pst.setInt(1, bookid);
+				int j = pst.executeUpdate();
+				if(j >0) {
+					System.out.println("Item deleted successfully");
+				}else {
+					System.out.println("Some error occures");
+				}
+		  }
+		}else {
+			System.out.println("---Book not found---");
+		}
+		
+		
+		
 	}
 
 	public static void buyBooks() throws SQLException {
@@ -137,12 +198,12 @@ public class UserOperations {
 		pst = con.prepareStatement(s);
 		rs = pst.executeQuery();
 		System.out.println(
-				"---------------------------------------------------------------------------------------------------------------------------");
+				"-----------------------------------------------------------------------------------------------------------------------------------");
 		System.out.format("%5s %20s %22s %19s %18s  %18s %18s", "BookId", "BookName", "Author", "Price", "Category",
 				"Quantity","Total_Price");
 		System.out.println();
 		System.out.println(
-				"---------------------------------------------------------------------------------------------------------------------------");
+				"-----------------------------------------------------------------------------------------------------------------------------------");
 		while (rs.next()) {
 			grand_total += rs.getFloat("total_price");
 			System.out.format("%5d %25s %25s %12f %18s %18s %18f", rs.getInt("bookid"), rs.getString("bookname"),
@@ -151,7 +212,7 @@ public class UserOperations {
 			System.out.println();
 		}
 		System.out.println(
-				"---------------------------------------------------------------------------------------------------------------------------");
+				"------------------------------------------------------------------------------------------------------------------------------------");
 		System.out.println("Place Order");
         System.out.println("1)Yes - Y");
         System.out.println("2)No  - N");
@@ -169,13 +230,17 @@ public class UserOperations {
         	LocalDateTime currentDate = LocalDateTime.now();
         	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         	orderDate = currentDate.format(formatter);
-        	
-        	
-        	s = "insert into order_table (username,email,address,pincode,phonenumber,order_date,bookid,bookname,authorname,bookprice,category,quantity,total_price)"
+        	System.out.println("Pay Rs."+grand_total);
+    		System.out.println("1)YES - Y");
+    		System.out.println("2)NO - N");
+    		System.out.println("Enter your choice:");
+    		c = sc.next().toUpperCase().charAt(0);
+    		if(c == 'Y') {
+        	sql = "insert into order_table (username,email,address,pincode,phonenumber,order_date,bookid,bookname,authorname,bookprice,category,quantity,total_price)"
         			+"select ?,?,?,?,?,?,bookid,bookname,authorname,bookprice,category,quantity,total_price"
         			+ " from add_to_cart where bookid = ?";
 
-        	pst = con.prepareStatement(s);
+        	pst = con.prepareStatement(sql);
         	pst.setString(1,LoginToBookStore.getUname());
         	pst.setString(2,LoginToBookStore.getUemail());
         	pst.setString(3, address);
@@ -185,8 +250,8 @@ public class UserOperations {
         	pst.setInt(7, bookid);
         	int i = pst.executeUpdate();
         	
-        	if(i>0) {
-        		System.out.println("Pay Rs."+grand_total);
+        	if(i>0) {                   //insert query order table
+        		
         		System.out.println("Payment in progress...");
         		System.out.println("Payment successfull");
         		System.out.println("Order placed Successfully");
@@ -194,34 +259,52 @@ public class UserOperations {
         		pst = con.prepareStatement(s);
         		pst.setInt(1, bookid);
         		int j = pst.executeUpdate();
-        		if(j>0) {
+        		if(j>0) {                     //delete items in cart
         			System.out.println("Thanks for your shopping!");
-        			System.out.println("Do you want to purchase again?");
-        			System.out.println("YES - Y");
-        			System.out.println("Enter your choice:");
-        			c = sc.next().toUpperCase().charAt(0);
-        			if(c == 'Y') {
-        				UserOperations.viewBooks();
-        				UserOperations.addToCart();
-        			}
-        		}else {
+        			
+        		}else {						
         			System.out.println("Some error occured!");
         		}
         		
-        	}else {
+        		quantity = availquantity - reqquantity;
+                sql = "update book set quantity = ? where bookid = ?";
+                pst = con.prepareStatement(sql);
+                pst.setInt(1, quantity);
+                pst.setInt(2, bookid);
+               int k =  pst.executeUpdate();
+               if(k>0) {
+            	   System.out.println("Do you want to purchase again?");
+       			System.out.println("YES - Y");
+       			System.out.println("Enter your choice:");
+       			c = sc.next().toUpperCase().charAt(0);
+       			if(c == 'Y') {            //for shopping again
+       				UserOperations.addToCart();
+       			}
+            	   
+               }else {
+            	   System.out.println("Error occured");
+               }
+        		
+        	}else {                         //insert query to order table
         		System.out.println("Errror Occured!");
         	}
+    		}else {                        //payment no means
+    			UserOperations.updateCart();
+    		}
         	
+        }else {                           //place order no means
+        	UserOperations.updateCart();
         }
 
 	}
 
 	public static void getPaymentReceipt() {
 		
-		System.out.println("Name:"+LoginToBookStore.getUname());
-		System.out.println("Address:"+address);
-		System.out.println("Date"+orderDate);
-		System.out.println("Total amount paid:"+grand_total);
+		System.out.println("Name             :"+LoginToBookStore.getUname());
+		System.out.println("Address          :"+address);
+		System.out.println("Date             :"+orderDate);
+		System.out.println("Total amount paid:RS."+grand_total);
+		System.out.println("Thank you for shopping Please Vist Again!");
 	}
 
 }

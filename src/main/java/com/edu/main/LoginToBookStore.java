@@ -57,6 +57,7 @@ public class LoginToBookStore {
 			pst.setString(2, pword);
 			rs = pst.executeQuery();
 			while(rs.next()) {
+				uemail = rs.getString("email");
 				if(pword.equals(rs.getString("password"))){
 				   return true;
 				}else {
