@@ -21,7 +21,7 @@ public class LoginToBookStore {
 	    Scanner sc = new Scanner(System.in);
 		con= BookStoreConnection.getConnection();
 		
-		System.out.println("Enter your uername or emailid:");
+		System.out.println("Enter your username or emailid:");
 		urp = sc.next();
 		
 		final String regex = "^(.+)@(.+)$";  

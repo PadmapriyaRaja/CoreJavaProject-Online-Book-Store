@@ -72,7 +72,7 @@ public class BookStoreMain {
 						char c = 'Y';
 						while (true) {
 							if (c == 'Y') {
-								System.out.println("1)VIEW BOOKS\n2)ADD TO CART\n3)BUY BOOKS\n4)GET PAYMENT RECEIPT");
+								System.out.println("1)VIEW BOOKS\n2)ADD TO CART\n3)BUY BOOKS");
 								System.out.println("Enter your Choice:");
 								uchoice = sc.nextInt();
 								switch (uchoice) {
@@ -85,9 +85,7 @@ public class BookStoreMain {
 								case 3:
 									UserOperations.buyBooks();
 									break;
-								case 4:
-									UserOperations.getPaymentReceipt();
-									break;
+								
 								default:
 									System.out.println("****INVALID CHOICE !!!! PLEASE TRY AGAIN****");
 									break;
@@ -97,6 +95,7 @@ public class BookStoreMain {
 								System.out.println("Enter your choice:");
 								c = sc.next().toUpperCase().charAt(0);
 							} else if (c == 'N') {
+								UserOperations.grand_total =0;
 								isLogged = false;
 								break;
 							} else {
