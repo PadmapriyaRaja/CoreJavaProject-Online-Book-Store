@@ -124,8 +124,16 @@ public class AdminOperations {
 		if(rs.next()) {
 			System.out.println("1)UPDATE BOOKPRICE\n2)UPDATE QUANTITY");
 			int choice = sc.nextInt();
+			while(true) {
 			System.out.println("Enter the price of the book to be updated:");
 			price = sc.nextFloat();
+			if(price<0) {
+				System.out.println("Please enter the valid price");
+			}
+			else {
+				break;
+			}
+			}
 			availprice = rs.getFloat("bookprice");
 			if(price<=availprice) {
 			if(choice == 1){
@@ -151,9 +159,15 @@ public class AdminOperations {
 			}
 			
 			}else if(choice == 2) {
-				
+					while(true) {
 					System.out.println("Enter the quantity of the book to be updated:");
 					quantity = sc.nextInt();
+					if(quantity<0) {
+						System.out.println("Please enter the valid quantity");
+					}else {
+						break;
+					}
+					}
 					s = " update book set quantity = ? where bookid = ?  ";
 					pst = con.prepareStatement(s);
 					pst.setFloat(1,quantity);
