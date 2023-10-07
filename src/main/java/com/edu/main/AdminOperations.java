@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class AdminOperations {
 	
 	private static Scanner sc;
-	private static String s,sql,bookname,author,category;
+	private static String s,sql,bookname,author,category,startDate,endDate;
 	private static  Connection con;
 	private static ResultSet rs;
 	private static PreparedStatement pst;
@@ -41,8 +41,15 @@ public class AdminOperations {
 	public static void insertBooks() throws SQLException {
 		con = BookStoreConnection.getConnection();
 		sc = new Scanner(System.in);
+		while(true) {
 		System.out.println("Enter the book id to be added:");
 		bookid = sc.nextInt();
+		if(bookid>0) {
+			break;
+		}else {
+			System.out.println("*Invalid bookid.Please enter the valid bookid");
+		}
+		}
 		s = "select * from book where bookid = ?";
 		pst = con.prepareStatement(s);
 		pst.setInt(1, bookid);
@@ -53,14 +60,27 @@ public class AdminOperations {
 			 bookname = sc.nextLine();
 			 System.out.println("Enter Author name:");
 			 author = sc.nextLine();
+			 while(true) {
 			 System.out.println("Enter the book price:");
 			 price = sc.nextFloat();
+			 if(price>0) {
+				 break;
+			 }else {
+				 System.out.println("*Invalid price.Please enter again");
+			 }
+			 }
 			 System.out.println("Enter the category:");
 			 sc.nextLine();
 			 category = sc.nextLine();
+			 while(true) {
 			 System.out.println("Enter the quantity of book:");
 			 quantity = sc.nextInt();
-			
+			 if(quantity>0) {
+				 break;
+			 }else {
+				 System.out.println("*Invalid quantity.Please enter again");
+			 }
+			 }
 			
 			 sql = "insert into book values (?,?,?,?,?,?)";
 			 
@@ -88,8 +108,15 @@ public class AdminOperations {
 	public static void deleteBooks() throws SQLException {
 		con = BookStoreConnection.getConnection();
 		sc = new Scanner(System.in);
-	    System.out.println("Enter the book id to be deleted:");
-	    bookid = sc.nextInt();
+		while(true) {
+			System.out.println("Enter the book id to be deleted:");
+			bookid = sc.nextInt();
+			if(bookid>0) {
+				break;
+			}else {
+				System.out.println("*Invalid bookid.Please enter the valid bookid");
+			}
+			}
 	    s = "select * from book where bookid = ?";
 	    pst = con.prepareStatement(s);
 	    pst.setInt(1, bookid);
@@ -102,7 +129,7 @@ public class AdminOperations {
 	    	 if(i>0) {
 	    		 System.out.println("Deleted record successfully");
 	    	 }else {
-	    		 System.out.println("Error occured");
+	    		 System.out.println("outor occured");
 	    	 }
 	    }else {
 	    	System.out.println("----Book not found----");
@@ -115,8 +142,15 @@ public class AdminOperations {
 	public static void update() throws SQLException  {
 		con = BookStoreConnection.getConnection();
 		sc = new Scanner(System.in);
-		System.out.println("Enter the book id to be updated:");
-		bookid = sc.nextInt();
+		while(true) {
+			System.out.println("Enter the book id to be updated:");
+			bookid = sc.nextInt();
+			if(bookid>0) {
+				break;
+			}else {
+				System.out.println("*Invalid bookid.Please enter the valid bookid");
+			}
+		}
 		s = "select * from book where bookid = ?";
 		pst = con.prepareStatement(s);
 		pst.setInt(1, bookid);
@@ -124,19 +158,22 @@ public class AdminOperations {
 		if(rs.next()) {
 			System.out.println("1)UPDATE BOOKPRICE\n2)UPDATE QUANTITY");
 			int choice = sc.nextInt();
-			while(true) {
-			System.out.println("Enter the price of the book to be updated:");
-			price = sc.nextFloat();
-			if(price<0) {
-				System.out.println("Please enter the valid price");
-			}
-			else {
-				break;
-			}
-			}
-			availprice = rs.getFloat("bookprice");
-			if(price<=availprice) {
+			
+			
+				
 			if(choice == 1){
+				availprice = rs.getFloat("bookprice");
+				if(price<=availprice) {
+				while(true) {
+					System.out.println("Enter the price of the book to be updated:");
+					price = sc.nextFloat();
+					if(price<0) {
+						System.out.println("Please enter the valid price");
+					}
+					else {
+						break;
+					}
+					}
 				System.out.println("1)INCREASE BOOKPRICE\n2)DECREASE BOOKPRICE");
 				int pricechoice = sc.nextInt();
 				if(pricechoice == 1) {
@@ -152,7 +189,7 @@ public class AdminOperations {
 				if(i>0) {
 					System.out.println("Updated the bookprice successfully");
 				}else {
-					System.out.println("Error occured");
+					System.out.println("outor occured");
 				}
 			}else {
 				System.out.println("Invalid amount");
@@ -174,7 +211,7 @@ public class AdminOperations {
 					pst.setInt(2, bookid);
 					int i = pst.executeUpdate();
 					if(i>0) {
-						System.out.println("Updated the bookprice successfully");
+						System.out.println("Updated the bookquantity successfully");
 					}else {
 						System.out.println("Error occured");
 					}
@@ -184,6 +221,45 @@ public class AdminOperations {
 		}else {
 			System.out.println("----Book not found----");
 		}
+	}
+	
+	public static void showHistory() throws SQLException {
+		
+		con = BookStoreConnection.getConnection();
+		sc = new Scanner(System.in);
+		System.out.println("Enter the start date:YYYY-MM-DD");
+		 startDate = sc.next();
+		System.out.println("Enter the end date:YYYY-MM-DD");
+		 endDate = sc.next();
+		 startDate = startDate+"00:00:00";
+		 endDate = endDate+"24:00:00";
+		s = "select * from order_table where order_date>=? and order_date<=?";
+		pst = con.prepareStatement(s);
+		pst.setString(1, startDate);
+		pst.setString(2, endDate);
+		rs = pst.executeQuery();
+		System.out.println(
+				"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+		System.out.format("%-10s %-15s %-30s %-40s %-10s %-15s %-10s %-30s %-20s %-10s %-15s %-10s %-15s %-20s%n",
+                "OrderID", "Username", "Email", "Address", "Pincode", "Phone Number", "BookID", "Book Name",
+                "Author Name", "Book Price", "Category", "Quantity", "Total Price", "Order Date");
+		System.out.println();
+		System.out.println(
+				"-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+	
+		while (rs.next()) {
+			
+			System.out.format("%-10d %-15s %-30s %-40s %-10s %-15s %-10d %-30s %-20s %-10.2f %-15s %-10d %-15.2f %-20s%n",rs.getInt("orderid"), rs.getString("username"),rs.getString("email"),
+					rs.getString("address"),rs.getString("pincode"),rs.getString("phonenumber"),rs.getInt("bookid"),rs.getString("bookname"),rs.getString("authorname"), rs.getFloat("bookprice"),
+					rs.getString("category"),rs.getInt("quantity"),rs.getFloat("total_price"),rs.getString("order_date"));
+			System.out.println();
+		}
+		System.out.println(
+				"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+		
+				
+		
 	}
 
 }

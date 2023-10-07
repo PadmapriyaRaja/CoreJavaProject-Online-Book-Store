@@ -15,8 +15,7 @@ public class RegisterInBookStore {
 	private static String s;
 	private static Scanner sc;
 	private static boolean isValid;
-	private static String RESET = "\u001B[0m";
-	private static String RED = "\u001B[31m";
+	
 	
 	public static void signup() throws SQLException {
 		
@@ -25,20 +24,16 @@ public class RegisterInBookStore {
 			String uname,pword="",pword1="",uemail;
 			
 			while(true) {
-				System.out.println("Enter the user Name : ");
-				System.out.println("A username is considered valid if all the following constraints are satisfied:\r\n"
-						+ "\r\n"
-						+ "The username consists of 6 to 30 characters inclusive. If the username\r\n"
-						+ "consists of less than 6 or greater than 30 characters, then it is an invalid username.\r\n"
-						+ "The username can only contain alphanumeric characters and underscores (_). Alphanumeric characters describe the character set consisting of lowercase characters [a – z], uppercase characters [A – Z], and digits [0 – 9].\r\n"
-						+ "The first character of the username must be an alphabetic character, i.e., either lowercase character\r\n"
-						+ "[a – z] or uppercase character [A – Z].");
+				System.out.println("Enter the usernmae:");
 				uname=sc.nextLine();
 				isValid = Validation.isValidUsername(uname);
 				if(isValid) {
 					break;
 				}else {
-					System.out.println(RED +"User name not valid" + RESET);
+					System.out.println("User name not valid" +"A username is considered valid if all the following constraints are satisfied:\r\n"
+							+ "*The username should contain of 5 to 30 characters inclusive.\r\n"
+							+ "*The username can only contain alphanumeric characters and underscores (_).\r\n"
+							+ "*The first character of the username must be an alphabetic character, i.e., either lowercase character [a – z] or uppercase character [A – Z].");
 				}
 			}
 			
@@ -49,26 +44,25 @@ public class RegisterInBookStore {
 				if(isValid) {
 					break;
 				}else {
-					System.out.println(RED +"Email not valid" + RESET);
+					System.out.println("Email not valid" );
 				}
 			}
 		    while(true) {
 		    	while(true) {
 		    	System.out.println("Enter the Password : ");
-		    	System.out.println("A password is considered valid if all the following constraints are satisfied:\r\n"
-		    			+ "\r\n"
-		    			+ "It contains at least 8 characters and at most 20 characters.\r\n"
-		    			+ "It contains at least one digit.\r\n"
-		    			+ "It contains at least one upper case alphabet.\r\n"
-		    			+ "It contains at least one lower case alphabet.\r\n"
-		    			+ "It contains at least one special character which includes !@#$%&*()-+=^.\r\n"
-		    			+ "It doesn’t contain any white space.");
 		    	pword=sc.nextLine();
 		    	isValid = Validation.isValidpassword(pword);
 		    	if(isValid) {
 		    		break;
 		    	}else {
-		    		System.out.println(RED +"Password is not valid" + RESET);
+		    		System.out.println("Password is not valid" );
+		    		System.out.println("A password is considered valid if all the following constraints are satisfied:\r\n"
+			    			+ "*It should contain at least 8 characters and at most 20 characters.\r\n"
+			    			+ "*It should contain at least one digit.\r\n"
+			    			+ "*It should contain at least one upper case alphabet.\r\n"
+			    			+ "*It should contain at least one lower case alphabet.\r\n"
+			    			+ "*It should contain at least one special character. \r\n"
+			    			+ "*It should not contain any white space.");
 		    	}
 		    	}
 		    	System.out.println("Re-enter the password :");

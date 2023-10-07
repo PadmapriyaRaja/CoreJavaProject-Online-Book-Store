@@ -41,7 +41,7 @@ public class LoginToBookStore {
 				if(pword.equals(rs.getString("password"))){	
 				   return true;
 				}else {
-					System.out.println("Password is incorrect");
+					System.err.println("Password is incorrect");
 					return false;
 				}
 			}
@@ -61,7 +61,7 @@ public class LoginToBookStore {
 				if(pword.equals(rs.getString("password"))){
 				   return true;
 				}else {
-					System.out.println("Password is incorrect");
+					System.err.println("Password is incorrect");
 					return false;
 				}
 			}

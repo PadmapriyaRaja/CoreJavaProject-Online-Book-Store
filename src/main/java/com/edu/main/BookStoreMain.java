@@ -14,6 +14,7 @@ public class BookStoreMain {
 		int userType;
 		boolean isLogged = false;
 		while (!isLogged) { // 1
+			UserOperations.getOrderId();
 			System.out.println("1)LOGIN\n2)SIGN UP\n3)EXIT");
 			System.out.println("Enter your choice:");
 			choice = sc.nextInt();
@@ -29,7 +30,7 @@ public class BookStoreMain {
 					char c = 'Y';
 					while (true) {
 					if (c == 'Y') {
-					System.out.println("1)LIST OF BOOKS\n2)ADD NEW BOOKS\n3)DELETE BOOKS\n4)UPDATE AMOUNT");
+					System.out.println("1)LIST OF BOOKS\n2)ADD NEW BOOKS\n3)DELETE BOOKS\n4)UPDATE\n5)VIEW ORDER HISTORY ");
 					System.out.println("Enter your choice:");
 					achoice = sc.nextInt();
 					switch (achoice) {
@@ -48,6 +49,10 @@ public class BookStoreMain {
 					case 4:
 						System.out.println("UPDATE BOOKS");
 						AdminOperations.update();
+						break;
+					case 5:
+						System.out.println("ORDER HISTORY");
+						AdminOperations.showHistory();
 						break;
 					default:
 						System.out.println("****INVALID CHOICE !!!! PLEASE TRY AGAIN****");

@@ -12,7 +12,7 @@ private static String regex;
 
 	public static boolean isValidUsername(String username) {
 		
-        regex = "^[A-Za-z]\\w{5,29}$"; 
+        regex = "^[A-Za-z]\\w{4,29}$"; 
         Pattern p = Pattern.compile(regex); 
         if (username == null) { 
             return false; 
@@ -46,6 +46,26 @@ private static String regex;
 	        }
 	        Matcher m = p.matcher(password);
 	        return m.matches();
+	}
+
+	public static boolean isValidpincode(String pincode) {
+		
+        regex = "^[1-9]{1}[0-9]{2}\\s{0,1}[0-9]{3}$";
+        Pattern p = Pattern.compile(regex);
+        if (pincode == null) {
+            return false;
+        }
+        Matcher m = p.matcher(pincode);
+        return m.matches();
+		
+	}
+
+	public static boolean isValidphonenumber(String phonenumber) {
+		regex = "(0|91)?[6-9][0-9]{9}";
+		Pattern p = Pattern.compile(regex);
+	    Matcher m = p.matcher(phonenumber);
+	    return (m.find() && m.group().equals(phonenumber));
+		
 	}
 
 	
